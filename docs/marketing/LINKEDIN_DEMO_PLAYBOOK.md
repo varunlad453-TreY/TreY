@@ -13,10 +13,10 @@ This document is your A-to-Z guide for recording, editing, and posting a high-co
    - Set browser zoom to 100% or 110% so text is legible on mobile screens.
 
 2. **Recording Software & Audio (The "Silent Actor" Method)**
-   - **Video:** Open Focusee (Free Tier is fine). Select the **Window** mode. 
-   - **Critical Settings:** Turn OFF your Webcam and turn OFF your Microphone against the right-hand panel in Focusee. We are recording a silent visual walkthrough.
+   - **Video:** We will use **Windows Snipping Tool** (Press `Win + Shift + S` -> Select Video icon). This is 100% free and bypasses all Focusee DRM limits.
+   - **Critical Settings:** We will record a silent visual walkthrough—no webcam or microphone needed.
    - **AI Voiceover:** We will use **ElevenLabs.io** (or a similar AI voice generator) to create a flawless, highly professional voiceover.
-   - **Editor:** Download **CapCut** (Free PC version) to merge the video and the AI voice.
+   - **Editor:** Download **VN Video Editor** (Free PC version, fully available in India) to merge the video, the AI voice, and add the cinematic zoom effects manually.
 
 3. **Application State**
    - Navigate to your LIVE production URL (e.g., your Render.com domain).
@@ -50,7 +50,8 @@ Since we are using an AI voiceover, you must record the screen in **complete sil
 * **WAIT - Network (1.0s):** Pause briefly at the login screen.
 * **Action - Login (3.5s):** Type `seceng@acme.com` (~1.5s), hit Tab, type `demo123` (~1.0s). Move mouse to hit "Login" (~1.0s).
 * **WAIT - Load (3.0s):** Let the Security Engineer dashboard load. (The AI says: *"But compliance does not happen in a vacuum—it happens at the engineering level."*)
-* **Action - Task Locate (1.5s):** Slowly move mouse to the task named "Endpoint Antivirus Validation" (or similar).
+* **Action - Navigate to My Tasks (1.0s):** Move mouse to the sidebar and click "My Tasks" (if not already visible) to show their dedicated queue.
+* **Action - Task Locate (1.5s):** Slowly move mouse to your specifically assigned task named "Endpoint Antivirus Validation" (or the one you seeded for this user).
 * **Action - Click Task (1.0s):** Click to open task details.
 * **WAIT - Task Auth (3.0s):** Pause inside the task. (The AI says: *"TreY gives engineers a distraction-free workflow. They see exactly what policies they need to fulfill..."*)
 * **Action - Upload (4.0s):** Click the "Upload Evidence" button (~1.0s), wait for file dialog (~0.5s), double click your sample PDF (~2.5s).
@@ -67,7 +68,7 @@ Since we are using an AI voiceover, you must record the screen in **complete sil
 * **Action - Return (1.5s):** Move mouse up to the "Dashboard" or "Home" button.
 * **Action - Click Home (0.5s):** Click it to return to the zoomed-out view.
 * **WAIT - Outro (5.0s):** Let the screen sit completely still. (The AI says: *"Compliance is not a checklist; it is a core security layer. We are currently onboarding design partners for our private beta. If you are ready to implement an immutable system-of-record for your enterprise governance, drop a comment below or send me a DM."*)
-* **Action - Stop (1.0s):** Move mouse to Focusee and hit stop on your recording.
+* **Action - Stop (1.0s):** Press `Win + Shift + S` or click the stop recording button.
 
 ### The Master AI Voiceover Script
 *(Copy this entire block into ElevenLabs to generate your single audio file)*
@@ -84,15 +85,25 @@ Since we are using an AI voiceover, you must record the screen in **complete sil
 
 ---
 
-## Phase 3: Post-Production (The AI Audio Merge)
+## Phase 3: Post-Production (The AI Audio Merge & VN Keyframe Zooms)
 
+**How to bypass Focusee & Create Automatic Zooms for Free:**
+Instead of CapCut (which is banned in India) or fighting Focusee DRM, we will use **VN Video Editor** (a fully free, watermark-less PC editor available globally).
+1. Open **VN Video Editor** on your PC and import your raw Windows Snipping Tool screen recording.
+2. Drag the video onto the timeline.
+3. **To Zoom In:** Play the video to the point where you want to highlight a button or table. Click the video track. Click the **Keyframe** (diamond) icon located right above the timeline toolbar. This locks the current "100% scale" framing.
+4. Move the playhead forward by `1 second`. 
+5. Drag your mouse to zoom the preview window to `150%` and recenter the video on the button. VN will automatically drop a second keyframe and animate a seamless, cinematic zoom between them!
+6. **To Zoom Out:** Re-add a keyframe at your current 150% scale right before you want the camera to reset. Move the timeline forward 1 second, and zoom back to `100%`.
+
+### Merging the Audio
 1. **Generate the Voice:** Paste the complete "ElevenLabs Script" above into ElevenLabs.io using an authoritative voice ("Marcus" or "Adam"). Download the `.mp3`.
-2. **Import into CapCut:** Open CapCut on your PC. Drag your silent Focusee video and your ElevenLabs `.mp3` onto the timeline.
+2. **Import into VN Editor:** Drag your ElevenLabs `.mp3` onto the timeline below your video.
 3. **Sync the Video to Audio:** 
-   - Start playing the timeline. If the video actions happen faster than the audio, click the video track in CapCut, right-click, and select **"Freeze Frame"** to pause the visual until the AI voice finishes its sentence.
-   - If the audio is too quiet, turn it up.
-4. **Crop & Polish:** Ensure your Windows taskbar is cropped out. **Keep the browser URL bar VISIBLE** at the top. (Do not worry about the Focusee watermark in the free version).
-5. **Add Subtitles (Critical):** 80% of LinkedIn users watch videos on mute. In CapCut, click "Text" -> "Auto Captions" -> "Create". Place them clearly at the bottom center, slightly above the Focusee watermark.
+   - Start playing the timeline. If the video actions happen faster than the audio, click the video track, select the **Freeze Frame** icon (snowflake) to pause the visual until the AI voice finishes its sentence.
+   - If the audio is too quiet, adjust the volume slider.
+4. **Crop & Polish:** Ensure your Windows taskbar is cropped out. **Keep the browser URL bar VISIBLE** at the top.
+5. **Add Subtitles (Critical):** 80% of LinkedIn users watch videos on mute. In VN Editor, click "Auto Captions" in the Text tab to generate them. Place them clearly at the bottom center.  
 
 ---
 

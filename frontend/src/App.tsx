@@ -1,8 +1,8 @@
 // ============================================
 // MAIN APP COMPONENT
 // ============================================
-import React, { ReactNode } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import React, { ReactNode, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ErrorBoundary } from './components';
 import { Layout } from './components';
@@ -63,9 +63,28 @@ const PublicRoute: React.FC<RouteWrapperProps> = ({ children }) => {
   return <>{children}</>;
 };
 
+// Automatic scroll to top on route change
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    // Some layouts scroll the main content area instead of the window Document body
+    const mainContent = document.querySelector('.main-content');
+    if (mainContent) {
+      mainContent.scrollTo(0, 0);
+    } else {
+      window.scrollTo(0, 0);
+    }
+  }, [pathname]);
+
+  return null;
+};
+
 const AppRoutes: React.FC = () => {
   return (
-    <Routes>
+    <>
+      <ScrollToTop />
+      <Routes>
       {/* Public routes */}
       <Route path="/login" element={
         <PublicRoute><Login /></PublicRoute>
@@ -93,6 +112,7 @@ const AppRoutes: React.FC = () => {
       {/* Catch all */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
+    </>
   );
 };
 
