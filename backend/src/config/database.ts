@@ -13,11 +13,9 @@ interface DatabaseConfig extends PoolConfig {
 }
 
 // Support both cloud database (DATABASE_URL) and legacy config
-const dbUrl = process.env.DATABASE_URL;
-
-const poolConfig: DatabaseConfig = dbUrl
+const poolConfig: DatabaseConfig = process.env.DATABASE_URL 
   ? {
-      connectionString: dbUrl,
+      connectionString: process.env.DATABASE_URL,
       ssl: {
         rejectUnauthorized: false // Required for cloud databases (Neon, Supabase, Railway)
       },
