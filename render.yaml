@@ -17,7 +17,7 @@ services:
       - key: PORT
         value: 3001
       - key: DATABASE_URL
-        value: "postgresql://postgres.dpcuhpdhzpdkvwkttvku:Guccigeng77@aws-0-ap-south-1.pooler.supabase.com:6543/postgres"
+        value: "postgresql://postgres:Guccigeng77@db.dpcuhpdhzpdkvwkttvku.supabase.co:5432/postgres"
       - key: JWT_SECRET
         generateValue: true
       - key: FRONTEND_URL
