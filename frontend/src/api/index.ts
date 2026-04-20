@@ -91,7 +91,7 @@ interface CreateObligationData {
   title: string;
   description: string;
   ownerId: string;
-  dueDate: string;
+  slaDueDate: string;
   regulationTag?: string;
 }
 

@@ -3,7 +3,8 @@ import { createAuditLog, AuditActions, getAuditLogsForEntity } from './auditServ
 
 export class ObligationService {
   async create(data: any): Promise<any> {
-    const { title, description, regulationTag, ownerId, slaDueDate, organizationId, userId, ipAddress, userAgent } = data;
+      const { title, description, regulationTag, ownerId, organizationId, userId, ipAddress, userAgent } = data;
+      const slaDueDate = data.slaDueDate || data.dueDate;
 
     const errors: string[] = [];
     if (!title || title.trim().length === 0) errors.push('Title is required');

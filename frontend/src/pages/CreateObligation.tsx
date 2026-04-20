@@ -102,7 +102,7 @@ const CreateObligation: React.FC = () => {
         title: formData.title,
         description: formData.description,
         ownerId: formData.ownerId,
-        dueDate: formData.slaDueDate,
+        slaDueDate: formData.slaDueDate,
         regulationTag: formData.regulationTag
       };
       const response = await obligationsAPI.create(obligationData);
