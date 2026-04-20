@@ -29,7 +29,7 @@ router.get('/', authenticate, async (req: AuthenticatedRequest, res: Response): 
 
     res.json({
       success: true,
-      users: result.rows
+      data: result.rows
     });
   } catch (error) {
     console.error('[USERS] List error:', error);
@@ -67,7 +67,7 @@ router.get('/:id', authenticate, async (req: AuthenticatedRequest, res: Response
 
     res.json({
       success: true,
-      user: result.rows[0]
+      data: result.rows[0]
     });
   } catch (error) {
     console.error('[USERS] Get error:', error);
