@@ -106,7 +106,8 @@ const CreateObligation: React.FC = () => {
         regulationTag: formData.regulationTag
       };
       const response = await obligationsAPI.create(obligationData);
-      navigate(`/obligations/${response.data.data?.id}`);
+      const newObligation: any = (response.data as any).obligation || response.data.data;
+      navigate(`/obligations/${newObligation?.id}`);
     } catch (err: any) {
       if (err.response?.data?.violations) {
         setViolations(err.response.data.violations);
