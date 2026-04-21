@@ -1,0 +1,1 @@
+const { pool } = require('./dist/config/database'); pool.query('SELECT * FROM users', (err, res) => { console.log(err || res.rows); process.exit(0); });

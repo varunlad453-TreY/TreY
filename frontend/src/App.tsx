@@ -17,7 +17,8 @@ import {
   MyTasks,
   ObligationRegister,
   IngestionCenter,
-  UnifiedInbox
+  UnifiedInbox,
+  SSOSuccess
 } from './pages';
 import './styles/global.css';
 import './styles/components.css';
@@ -86,6 +87,7 @@ const AppRoutes: React.FC = () => {
       <ScrollToTop />
       <Routes>
       {/* Public routes */}
+      <Route path="/sso-success" element={<SSOSuccess />} />
       <Route path="/login" element={
         <PublicRoute><Login /></PublicRoute>
       } />

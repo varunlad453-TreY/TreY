@@ -19,6 +19,12 @@ export interface AuthenticatedUser {
   organization_type?: string;
 }
 
+declare global {
+  namespace Express {
+    interface User extends AuthenticatedUser {}
+  }
+}
+
 export interface AuthRequest extends Request {
   user?: AuthenticatedUser;
   ipAddress?: string;

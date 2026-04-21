@@ -40,14 +40,25 @@ export function AuthProvider({ children }: AuthProviderProps): React.JSX.Element
     const token = localStorage.getItem('token');
     const savedUser = localStorage.getItem('user');
     
-    if (token && savedUser) {
-      setUser(JSON.parse(savedUser) as User);
-      // Verify token is still valid
+    if (token) {
+      if (savedUser) {
+        setUser(JSON.parse(savedUser) as User);
+      }
+      // Verify token is still valid and fetch user data if missing
       authAPI.me()
         .then(res => {
-          if (res.data.data) {
-            setUser(res.data.data);
-            localStorage.setItem('user', JSON.stringify(res.data.data));
+          // Backend returns { user: { ... } } directly
+          const responseData = res.data as any;
+          const userData = responseData.user || responseData.data;
+          
+          if (userData) {
+            setUser(userData);
+            localStorage.setItem('user', JSON.stringify(userData));
+          } else {
+            // Token invalid or payload mismatch, clear session
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            setUser(null);
           }
         })
         .catch(() => {

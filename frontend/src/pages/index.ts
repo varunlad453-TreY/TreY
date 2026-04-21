@@ -14,3 +14,5 @@ export { default as MyTasks } from './MyTasks';
 export { default as ObligationRegister } from './ObligationRegister';
 export { default as IngestionCenter } from './IngestionCenter';
 export { default as UnifiedInbox } from './UnifiedInbox';
+
+export { default as SSOSuccess } from './SSOSuccess';

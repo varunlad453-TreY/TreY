@@ -15,7 +15,7 @@ import {
   ApiResponse 
 } from '../types';
 
-let tempApiBaseUrl = process.env.REACT_APP_API_URL || 'http://localhost:3001/api';
+let tempApiBaseUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 // Auto-append /api for live deployments if missing
 if (tempApiBaseUrl && !tempApiBaseUrl.endsWith('/api')) {
   tempApiBaseUrl += '/api';

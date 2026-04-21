@@ -79,6 +79,8 @@ app.use('/api/auth/register', authLimiter);
 
 // Parse JSON bodies
 app.use(express.json());
+import passport from './config/passport';
+app.use(passport.initialize());
 app.use(express.urlencoded({ extended: true }));
 
 // Request logging (for debugging)

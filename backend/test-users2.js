@@ -1,0 +1,1 @@
+require('dotenv').config(); const { pool } = require('./dist/config/database'); pool.query('SELECT id, email, sso_provider_id FROM users', (err, res) => { console.log(err || res.rows); process.exit(0); });
