@@ -2,6 +2,38 @@ import passport from 'passport';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { pool } from './database';
 
+const GOOGLE_CLIENT_ID_PLACEHOLDER = 'ENTERPRISE_CLIENT_ID_PLACEHOLDER';
+const GOOGLE_CLIENT_SECRET_PLACEHOLDER = 'ENTERPRISE_CLIENT_SECRET_PLACEHOLDER';
+
+const getGoogleOAuthConfig = () => {
+  const clientID = (process.env.GOOGLE_CLIENT_ID || '').trim();
+  const clientSecret = (process.env.GOOGLE_CLIENT_SECRET || '').trim();
+  const callbackURL = resolveGoogleCallbackUrl();
+
+  if (!clientID || clientID === GOOGLE_CLIENT_ID_PLACEHOLDER) {
+    throw new Error('Google OAuth misconfigured: GOOGLE_CLIENT_ID is missing. Use the real Google OAuth Client ID ending with .apps.googleusercontent.com');
+  }
+
+  if (clientID.includes('http://') || clientID.includes('https://') || !clientID.endsWith('.apps.googleusercontent.com')) {
+    throw new Error(`Google OAuth misconfigured: GOOGLE_CLIENT_ID is invalid (received: ${clientID}). It must look like <id>.apps.googleusercontent.com`);
+  }
+
+  if (!clientSecret || clientSecret === GOOGLE_CLIENT_SECRET_PLACEHOLDER) {
+    throw new Error('Google OAuth misconfigured: GOOGLE_CLIENT_SECRET is missing. Use the real OAuth client secret from Google Cloud Console.');
+  }
+
+  try {
+    const parsed = new URL(callbackURL);
+    if (!parsed.protocol.startsWith('http')) {
+      throw new Error('Invalid callback protocol');
+    }
+  } catch (_error) {
+    throw new Error(`Google OAuth misconfigured: callback URL is invalid (${callbackURL}).`);
+  }
+
+  return { clientID, clientSecret, callbackURL };
+};
+
 const resolveGoogleCallbackUrl = (): string => {
   const configuredCallbackUrl = process.env.GOOGLE_CALLBACK_URL?.trim();
   if (configuredCallbackUrl) {
@@ -16,10 +48,12 @@ const resolveGoogleCallbackUrl = (): string => {
   return 'http://localhost:5000/api/auth/google/callback';
 };
 
+const googleOAuthConfig = getGoogleOAuthConfig();
+
 passport.use(new GoogleStrategy({
-    clientID: process.env.GOOGLE_CLIENT_ID || 'ENTERPRISE_CLIENT_ID_PLACEHOLDER',
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET || 'ENTERPRISE_CLIENT_SECRET_PLACEHOLDER',
-    callbackURL: resolveGoogleCallbackUrl()
+    clientID: googleOAuthConfig.clientID,
+    clientSecret: googleOAuthConfig.clientSecret,
+    callbackURL: googleOAuthConfig.callbackURL
   },
   async (_accessToken, _refreshToken, profile, done) => {
     try {
