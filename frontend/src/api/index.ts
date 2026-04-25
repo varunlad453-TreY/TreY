@@ -15,15 +15,37 @@ import {
   ApiResponse 
 } from '../types';
 
-let tempApiBaseUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
-// Auto-append /api for live deployments if missing
-if (tempApiBaseUrl && !tempApiBaseUrl.endsWith('/api')) {
-  tempApiBaseUrl += '/api';
-}
-const API_BASE_URL: string = tempApiBaseUrl;
+const normalizeApiBaseUrl = (rawUrl?: string): string => {
+  const trimmedUrl = (rawUrl || '').trim();
+  if (!trimmedUrl) {
+    return '';
+  }
+
+  return trimmedUrl.endsWith('/api') ? trimmedUrl : `${trimmedUrl}/api`;
+};
+
+const getDefaultApiBaseUrl = (): string => {
+  const hostname = window.location.hostname;
+
+  if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1') {
+    return 'http://localhost:5000/api';
+  }
+
+  return 'https://trey-backend-d35i.onrender.com/api';
+};
+
+const resolvedEnvApiBaseUrl = normalizeApiBaseUrl(process.env.REACT_APP_API_URL);
+const isLocalHost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === '::1';
+const isLocalApiUrl = /(^https?:\/\/)?(localhost|127\.0\.0\.1|\[::1\]|::1)(:|\/|$)/i.test(resolvedEnvApiBaseUrl);
+const apiBaseFromEnv = resolvedEnvApiBaseUrl && (!isLocalApiUrl || isLocalHost)
+  ? resolvedEnvApiBaseUrl
+  : '';
+
+export const API_BASE_URL: string = apiBaseFromEnv || getDefaultApiBaseUrl();
 
 const api: AxiosInstance = axios.create({
   baseURL: API_BASE_URL,
+  timeout: 15000,
   headers: {
     'Content-Type': 'application/json'
   }
@@ -182,6 +204,18 @@ export const auditAPI = {
   
   list: (limit?: number): Promise<AxiosResponse<ApiResponse<AuditLog[]>>> => 
     api.get('/audit', { params: { limit } })
+};
+
+// ============================================
+// WEBHOOKS API
+// ============================================
+export const webhooksAPI = {
+  link: (obligationId: string, integrationType: string, referenceId: string): Promise<AxiosResponse<ApiResponse<any>>> => 
+    api.post('/webhooks/link', { 
+      obligation_id: obligationId, 
+      integration_type: integrationType, 
+      external_reference_id: referenceId 
+    })
 };
 
 export default api;

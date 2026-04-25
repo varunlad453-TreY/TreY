@@ -2,10 +2,24 @@ import passport from 'passport';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { pool } from './database';
 
+const resolveGoogleCallbackUrl = (): string => {
+  const configuredCallbackUrl = process.env.GOOGLE_CALLBACK_URL?.trim();
+  if (configuredCallbackUrl) {
+    return configuredCallbackUrl;
+  }
+
+  const renderExternalUrl = process.env.RENDER_EXTERNAL_URL?.trim();
+  if (renderExternalUrl) {
+    return `${renderExternalUrl.replace(/\/+$/, '')}/api/auth/google/callback`;
+  }
+
+  return 'http://localhost:5000/api/auth/google/callback';
+};
+
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID || 'ENTERPRISE_CLIENT_ID_PLACEHOLDER',
     clientSecret: process.env.GOOGLE_CLIENT_SECRET || 'ENTERPRISE_CLIENT_SECRET_PLACEHOLDER',
-    callbackURL: process.env.GOOGLE_CALLBACK_URL || 'http://localhost:5000/api/auth/google/callback'
+    callbackURL: resolveGoogleCallbackUrl()
   },
   async (_accessToken, _refreshToken, profile, done) => {
     try {

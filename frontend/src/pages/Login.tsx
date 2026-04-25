@@ -4,6 +4,7 @@
 import React, { useState, FormEvent, ChangeEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { API_BASE_URL } from '../api';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState<string>('');
@@ -75,7 +76,7 @@ const Login: React.FC = () => {
 
           <div className="form-actions" style={{ marginTop: '15px' }}>
             <a 
-              href="http://localhost:5000/api/auth/google" 
+              href={`${API_BASE_URL}/auth/google`} 
               className="btn btn-secondary" 
               style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff', border: '1px solid #dadce0', color: '#3c4043', gap: '10px', fontWeight: 500 }}
             >
