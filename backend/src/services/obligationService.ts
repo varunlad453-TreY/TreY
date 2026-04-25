@@ -169,6 +169,19 @@ export class ObligationService {
       else riskStatus = 'GREEN';
     }
 
+    const integrationLinksResult = await pool.query(
+      `SELECT id,
+              integration_type AS provider,
+              external_reference_id AS reference_id,
+              metadata,
+              metadata->>'link_url' AS link_url,
+              created_at
+       FROM integration_links
+       WHERE obligation_id = $1
+       ORDER BY created_at DESC`,
+      [id]
+    );
+
     return {
       success: true,
       data: {
@@ -176,7 +189,8 @@ export class ObligationService {
         ownerHistory: ownerHistoryResult.rows,
         currentOwner: ownerHistoryResult.rows.find((o: any) => o.is_current),
         slaHistory: slaHistoryResult.rows,
-        currentSla, evidence: evidenceResult.rows, auditTimeline: allAuditLogs
+        currentSla, evidence: evidenceResult.rows, auditTimeline: allAuditLogs,
+        integrationLinks: integrationLinksResult.rows
       }
     };
   }
@@ -230,7 +244,7 @@ export class ObligationService {
         await client.query('ROLLBACK'); return { success: false, error: 'ENFORCEMENT_VIOLATION', message: 'User is already the current owner of this obligation' };
       }
 
-      await client.query('UPDATE obligation_owners SET is_current = false, ended_at = NOW() WHERE obligation_id = $1 AND is_current = true', [id]);
+      await client.query('UPDATE obligation_owners SET is_current = false WHERE obligation_id = $1 AND is_current = true', [id]);
 
       const ownerResult = await client.query(
         `INSERT INTO obligation_owners (obligation_id, user_id, assigned_by, is_current) VALUES ($1, $2, $3, true) RETURNING *`,

@@ -33,10 +33,10 @@ export interface Obligation {
   organization_id: string;
   title: string;
   description: string;
-  status: 'pending' | 'in_progress' | 'completed' | 'overdue';
+  status: 'open' | 'closed' | 'breached';
   created_by: string;
   created_at: Date;
-  updated_at: Date;
+  closed_at: Date | null;
 }
 
 export interface ObligationOwner {

@@ -16,9 +16,7 @@ const authController = new AuthController({ authService, auditRepository });
 // Existing local auth
 router.post('/register', authController.register);
 router.post('/login', authController.login);
-/* @ts-ignore */
 router.get('/me', authenticate, authController.me);
-/* @ts-ignore */
 router.post('/logout', authenticate, authController.logout);
 
 // ============================================
@@ -26,7 +24,7 @@ router.post('/logout', authenticate, authController.logout);
 // ============================================
 // Step 1: Redirect to Google
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
-
+  
 // Step 2: Google calls this back
 router.get('/google/callback', 
   passport.authenticate('google', { session: false, failureRedirect: '/login?error=sso_failed' }),

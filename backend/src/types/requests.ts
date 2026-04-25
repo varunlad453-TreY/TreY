@@ -33,7 +33,7 @@ export interface CreateObligationRequest {
 export interface UpdateObligationRequest {
   title?: string;
   description?: string;
-  status?: 'pending' | 'in_progress' | 'completed' | 'overdue';
+  status?: 'open' | 'closed' | 'breached';
 }
 
 // SLA Request Types
@@ -68,17 +68,7 @@ export interface UpdateUserRoleRequest {
 
 // Extended Request with User
 export interface AuthenticatedRequest extends Request {
-  user?: {
-    id: string;
-    email: string;
-    name: string;
-    role: string;
-    organization_id: string;
-    organizationId?: string;
-    is_active: boolean;
-    organization_name?: string;
-    organization_type?: string;
-  };
+  user?: Express.User;
   ipAddress?: string;
   userAgent?: string;
 }

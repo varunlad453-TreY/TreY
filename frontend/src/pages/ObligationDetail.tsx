@@ -5,7 +5,7 @@
 
 import React, { useState, useEffect, useCallback, FormEvent, ChangeEvent } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { obligationsAPI, evidenceAPI, exportAPI, usersAPI, slaAPI } from '../api';
+import { obligationsAPI, evidenceAPI, exportAPI, usersAPI, slaAPI, webhooksAPI } from '../api';
 import SLAClock from '../components/SLAClock';
 import OwnershipTimeline from '../components/OwnershipTimeline';
 import EvidenceList from '../components/EvidenceList';
@@ -68,6 +68,15 @@ interface Obligation {
   ingestion_source?: string;
 }
 
+interface IntegrationLink {
+  id: string;
+  provider: string;
+  reference_id: string;
+  link_url?: string | null;
+  metadata?: Record<string, any>;
+  created_at: string;
+}
+
 /** Produce a short fake hash from a string (demo only — not cryptographic) */
 const fakeHash = (input: string): string => {
   let h = 0;
@@ -95,6 +104,7 @@ interface ObligationData {
   currentSla?: SLA;
   evidence: Evidence[];
   auditTimeline: AuditLog[];
+  integrationLinks?: IntegrationLink[];
 }
 
 interface User {
@@ -108,6 +118,7 @@ const ObligationDetail: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
+  const [notice, setNotice] = useState<string>('');
   const [showOverlay, setShowOverlay] = useState<boolean>(true);
   
   // Modal states
@@ -115,6 +126,7 @@ const ObligationDetail: React.FC = () => {
   const [showExtendModal, setShowExtendModal] = useState<boolean>(false);
   const [showUploadModal, setShowUploadModal] = useState<boolean>(false);
   const [showStatusModal, setShowStatusModal] = useState<boolean>(false);
+  const [showLinkModal, setShowLinkModal] = useState<boolean>(false);
   const [showExportPreview, setShowExportPreview] = useState<boolean>(false);
 
   const loadData = useCallback(async (): Promise<void> => {
@@ -125,6 +137,7 @@ const ObligationDetail: React.FC = () => {
       ]);
       setData(obligationRes.data as any || null);
       setUsers(usersRes.data.data || []);
+      setError('');
     } catch (err) {
       setError('Failed to load obligation details');
     } finally {
@@ -156,7 +169,7 @@ const ObligationDetail: React.FC = () => {
     return <div className="alert alert-error">Obligation not found</div>;
   }
 
-  const { obligation, ownerHistory, currentOwner, slaHistory, currentSla, evidence, auditTimeline } = data;
+  const { obligation, ownerHistory, currentOwner, slaHistory, currentSla, evidence, auditTimeline, integrationLinks } = data;
 
   const getRiskStatusClass = (): string => {
     if (obligation.status === 'breached') return 'red';
@@ -178,6 +191,8 @@ const ObligationDetail: React.FC = () => {
 
   return (
     <div className="obligation-detail-page">
+
+      {notice && <div className="alert alert-success">{notice}</div>}
 
       {/* Demo Overlay — auto-fades */}
       {showOverlay && (
@@ -257,11 +272,38 @@ const ObligationDetail: React.FC = () => {
                 Owned by <strong>{currentOwner.owner_name}</strong>
               </span>
             )}
+            {integrationLinks && integrationLinks.map((link: IntegrationLink) => {
+              const linkLabel = `${(link.provider || 'integration').toUpperCase()} - ${link.reference_id}`;
+
+              if (!link.link_url) {
+                return (
+                  <span
+                    key={link.id}
+                    className="od-integration-badge"
+                    style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', backgroundColor: '#e2f0d9', color: '#1a5d1a', padding: '4px 8px', borderRadius: '4px', fontSize: '13px', fontWeight: 'bold' }}
+                    title="Linked successfully. No external URL configured."
+                  >
+                    🔗 {linkLabel}
+                  </span>
+                );
+              }
+
+              return (
+                <a key={link.id} href={link.link_url} target="_blank" rel="noopener noreferrer" className="od-integration-badge" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', textDecoration: 'none', backgroundColor: '#e2f0d9', color: '#1a5d1a', padding: '4px 8px', borderRadius: '4px', fontSize: '13px', fontWeight: 'bold' }}>
+                  🔗 {linkLabel}
+                </a>
+              );
+            })}
           </div>
         </div>
-        <button className="od-export-btn" onClick={() => setShowExportPreview(true)}>
-          Export Audit Package
-        </button>
+        <div style={{ display: 'flex', gap: '10px' }}>
+          <button className="od-outline-btn" style={{ borderColor: '#2E5BFF', color: '#2E5BFF' }} onClick={() => setShowLinkModal(true)}>
+            Link Integration
+          </button>
+          <button className="od-export-btn" onClick={() => setShowExportPreview(true)}>
+            Export Audit Package
+          </button>
+        </div>
       </div>
 
       {/* Two-Column Layout */}
@@ -611,6 +653,18 @@ const ObligationDetail: React.FC = () => {
           obligationId={id!}
           onClose={() => setShowStatusModal(false)}
           onSuccess={() => { setShowStatusModal(false); loadData(); }}
+        />
+      )}
+
+      {showLinkModal && (
+        <LinkIntegrationModal
+          obligationId={id!}
+          onClose={() => setShowLinkModal(false)}
+          onSuccess={() => {
+            setShowLinkModal(false);
+            setNotice('Integration link created successfully.');
+            void loadData();
+          }}
         />
       )}
 
@@ -1125,6 +1179,90 @@ const ChangeStatusModal: React.FC<ChangeStatusModalProps> = ({ obligationId, onC
             </div>
           </>
         )}
+      </div>
+    </div>
+  );
+};
+
+// ============================================
+// LINK INTEGRATION MODAL
+// ============================================
+interface LinkIntegrationModalProps {
+  obligationId: string;
+  onClose: () => void;
+  onSuccess: () => void;
+}
+
+const LinkIntegrationModal: React.FC<LinkIntegrationModalProps> = ({ obligationId, onClose, onSuccess }) => {
+  const [integrationType, setIntegrationType] = useState<string>('jira');
+  const [referenceId, setReferenceId] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>('');
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!referenceId.trim()) {
+      setError('Please enter a Ticket ID or Channel Name');
+      return;
+    }
+    try {
+      setLoading(true);
+      setError('');
+      await webhooksAPI.link(obligationId, integrationType, referenceId.trim());
+      onSuccess();
+    } catch (err: any) {
+      if (err?.code === 'ECONNABORTED') {
+        setError('Request timed out while linking integration. Please try again.');
+      } else {
+        setError(err.response?.data?.message || 'Failed to link integration');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal" onClick={e => e.stopPropagation()}>
+        <h2>Link Shadow Decisions</h2>
+        <p style={{ color: '#666', marginBottom: '16px' }}>
+          Listen for automated signals from third-party tools to auto-resolve or capture evidence for this obligation.
+        </p>
+
+        {error && <div className="alert alert-error">{error}</div>}
+
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label>Integration Type</label>
+            <select
+              className="form-control"
+              value={integrationType}
+              onChange={e => setIntegrationType(e.target.value)}
+            >
+              <option value="jira">Jira (Auto-close on Done)</option>
+              <option value="slack">Slack (Capture threaded evidence)</option>
+            </select>
+          </div>
+
+          <div className="form-group">
+            <label>{integrationType === 'jira' ? 'Jira Issue Key' : 'Slack Channel ID'}</label>
+            <input 
+              type="text" 
+              className="form-control"
+              placeholder={integrationType === 'jira' ? 'e.g., SEC-101' : 'e.g., C01ABCD234'}
+              value={referenceId}
+              onChange={e => setReferenceId(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="modal-actions">
+            <button type="button" className="btn btn-secondary" onClick={onClose}>Cancel</button>
+            <button type="submit" className="btn btn-primary" disabled={loading || !referenceId}>
+              {loading ? 'Linking...' : 'Create Link'}
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );

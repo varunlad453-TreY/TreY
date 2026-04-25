@@ -38,7 +38,7 @@ export const obligationValidators = {
       .isUUID()
       .withMessage('Valid obligation ID is required'),
     body('status')
-      .isIn(['pending', 'in_progress', 'completed', 'overdue'])
-      .withMessage('Status must be pending, in_progress, completed, or overdue')
+      .isIn(['closed', 'breached'])
+      .withMessage('Status must be closed or breached')
   ]
 };

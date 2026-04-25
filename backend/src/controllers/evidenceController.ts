@@ -86,7 +86,12 @@ export class EvidenceController {
         return;
       }
 
-      res.download(result.evidence.file_path, result.evidence.file_name);
+      if (result.downloadTarget.mode === 'url' && result.downloadTarget.url) {
+        res.redirect(result.downloadTarget.url);
+        return;
+      }
+
+      res.download(result.downloadTarget.localPath, result.evidence.file_name);
     } catch (error) {
       console.error('[EVIDENCE] Download error:', error);
       res.status(500).json({ error: 'DOWNLOAD_ERROR', message: 'Failed to download evidence' });

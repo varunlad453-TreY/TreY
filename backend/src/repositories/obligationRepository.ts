@@ -32,7 +32,7 @@ export class ObligationRepository extends BaseRepository {
   }): Promise<Obligation> {
     const result = await this.query<Obligation>(
       `INSERT INTO obligations (title, description, organization_id, created_by, status)
-       VALUES ($1, $2, $3, $4, 'pending')
+       VALUES ($1, $2, $3, $4, 'open')
        RETURNING *`,
       [obligationData.title, obligationData.description, obligationData.organization_id, obligationData.created_by]
     );
@@ -40,8 +40,9 @@ export class ObligationRepository extends BaseRepository {
   }
 
   async updateStatus(id: string, status: string): Promise<void> {
+    const isClosed = status === 'closed' || status === 'breached';
     await this.query(
-      'UPDATE obligations SET status = $1, updated_at = NOW() WHERE id = $2',
+      `UPDATE obligations SET status = $1${isClosed ? ', closed_at = COALESCE(closed_at, NOW())' : ''} WHERE id = $2`,
       [status, id]
     );
   }

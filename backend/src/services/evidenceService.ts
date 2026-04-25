@@ -1,6 +1,7 @@
 import { pool } from '../config/database';
 import { createAuditLog, AuditActions } from './auditService';
 import fs from 'fs';
+import { storageService } from './storageService';
 
 export class EvidenceService {
   async upload(data: any): Promise<any> {
@@ -31,12 +32,18 @@ export class EvidenceService {
       
       const isLate = today > slaDueDate;
 
+      const storageResult = await storageService.uploadEvidence({
+        file,
+        organizationId,
+        obligationId
+      });
+
       const evidenceResult = await client.query(
         `INSERT INTO evidence (
           obligation_id, file_path, file_name, file_size_bytes, 
           mime_type, reference_note, uploaded_by, is_late, sla_due_date_at_upload
         ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *`,
-        [obligationId, file.path, file.originalname, file.size, file.mimetype, referenceNote, userId, isLate, slaCheck.rows[0].due_date]
+        [obligationId, storageResult.filePath, file.originalname, file.size, file.mimetype, referenceNote, userId, isLate, slaCheck.rows[0].due_date]
       );
 
       const evidence = evidenceResult.rows[0];
@@ -104,8 +111,13 @@ export class EvidenceService {
     if (evidenceResult.rows.length === 0) return { success: false, error: 'NOT_FOUND', message: 'Evidence not found' };
 
     const evidence = evidenceResult.rows[0];
-    if (!fs.existsSync(evidence.file_path)) return { success: false, error: 'FILE_NOT_FOUND', message: 'Evidence file not found on server' };
 
-    return { success: true, evidence };
+    if (!evidence.file_path.startsWith('s3://') && !fs.existsSync(evidence.file_path)) {
+      return { success: false, error: 'FILE_NOT_FOUND', message: 'Evidence file not found on server' };
+    }
+
+    const downloadTarget = await storageService.getDownloadTarget(evidence.file_path);
+
+    return { success: true, evidence, downloadTarget };
   }
 }

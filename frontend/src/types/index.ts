@@ -19,11 +19,11 @@ export interface Obligation {
   id: string;
   title: string;
   description: string;
-  status: 'pending' | 'in_progress' | 'completed' | 'overdue';
+  status: 'open' | 'closed' | 'breached';
   organization_id: string;
   created_by: string;
   created_at: string;
-  updated_at: string;
+  closed_at?: string | null;
   // Joined fields
   owner_name?: string;
   owner_email?: string;
@@ -138,4 +138,5 @@ export interface ObligationData {
   currentSla?: any;
   evidence: any[];
   auditTimeline: any[];
+  integrationLinks?: any[];
 }
