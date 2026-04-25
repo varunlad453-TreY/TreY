@@ -17,7 +17,7 @@ services:
       - key: PORT
         value: 3001
       - key: DATABASE_URL
-        value: "postgresql://neondb_owner:npg_7cTAemHiG4SE@ep-dry-mud-a1jqq7uv.ap-southeast-1.aws.neon.tech/neondb?sslmode=require"
+        sync: false
       - key: JWT_SECRET
         generateValue: true
       - key: FRONTEND_URL

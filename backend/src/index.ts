@@ -17,15 +17,21 @@ import express, { Express, Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
+import logger from './utils/logger';
+import { captureException, initMonitoring } from './config/monitoring';
+
+initMonitoring();
 
 // Global error handlers to prevent crashes
 process.on('uncaughtException', (err) => {
-  console.error('[FATAL] Uncaught Exception:', err);
+  logger.error('[FATAL] Uncaught Exception', { error: err instanceof Error ? err.message : String(err) });
+  captureException(err);
   // Don't exit - keep server running
 });
 
 process.on('unhandledRejection', (reason, promise) => {
-  console.error('[FATAL] Unhandled Rejection at:', promise, 'reason:', reason);
+  logger.error('[FATAL] Unhandled Rejection', { promise: String(promise), reason: String(reason) });
+  captureException(reason);
   // Don't exit - keep server running
 });
 
@@ -40,6 +46,7 @@ import alertsRoutes from './routes/alerts';
 import organizationsRoutes from './routes/organizations';
 import auditRoutes from './routes/audit';
 import ingestionRoutes from './routes/ingestion';
+import webhooksRoutes from './routes/webhooks';
 
 // Import cron jobs
 import { startSLAAlertJob } from './jobs/slaAlertJob';
@@ -56,10 +63,19 @@ app.use(cors({
 }));
 
 // Rate limiting - Per rulebook: 100 req / 15 min general, 5 req / 15 min auth
-// Expanded limits to prevent developer/testing lockout
+// Use safe production defaults while allowing dev/test override via environment.
+const apiRateLimitMax = parseInt(
+  process.env.RATE_LIMIT_API_MAX || (process.env.NODE_ENV === 'production' ? '100' : '1000'),
+  10
+);
+const authRateLimitMax = parseInt(
+  process.env.RATE_LIMIT_AUTH_MAX || (process.env.NODE_ENV === 'production' ? '5' : '100'),
+  10
+);
+
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 1000, // Increased for testing (was 100)
+  max: apiRateLimitMax,
   message: 'Too many requests from this IP, please try again later.',
   standardHeaders: true,
   legacyHeaders: false,
@@ -67,7 +83,7 @@ const apiLimiter = rateLimit({
 
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Increased to prevent lockout during testing (was 5)
+  max: authRateLimitMax,
   message: 'Too many login attempts, please try again later.',
   skipSuccessfulRequests: true,
 });
@@ -85,7 +101,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Request logging (for debugging)
 app.use((req: Request, _res: Response, next: NextFunction): void => {
-  console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
+  logger.info('Incoming request', { method: req.method, path: req.path });
   next();
 });
 
@@ -109,6 +125,7 @@ app.use('/api/alerts', alertsRoutes);
 app.use('/api/organizations', organizationsRoutes);
 app.use('/api/audit', auditRoutes);
 app.use('/api/ingestion', ingestionRoutes);
+app.use('/api/webhooks', webhooksRoutes);
 
 // Error handling middleware
 interface ErrorWithMessage extends Error {
@@ -116,7 +133,8 @@ interface ErrorWithMessage extends Error {
 }
 
 app.use((err: ErrorWithMessage, _req: Request, res: Response, _next: NextFunction): void => {
-  console.error('[ERROR]', err);
+  logger.error('[ERROR] Request failed', { error: err.message, stack: err.stack });
+  captureException(err);
   
   // Check for enforcement violations
   if (err.message && err.message.includes('ENFORCEMENT VIOLATION')) {
@@ -129,7 +147,8 @@ app.use((err: ErrorWithMessage, _req: Request, res: Response, _next: NextFunctio
   
   res.status(500).json({
     error: 'INTERNAL_ERROR',
-    message: err.message, stack: err.stack
+    message: err.message,
+    stack: process.env.NODE_ENV === 'production' ? undefined : err.stack
   });
 });
 
@@ -143,26 +162,26 @@ app.use((_req: Request, res: Response): void => {
 
 // Start server
 app.listen(PORT, (): void => {
-  console.log('============================================');
-  console.log('COMPLIANCE EXECUTION SYSTEM - BACKEND');
-  console.log('============================================');
-  console.log(`Server running on port ${PORT}`);
-  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log('');
-  console.log('ENFORCEMENT RULES ACTIVE:');
-  console.log('- Obligations cannot be deleted');
-  console.log('- Owners are append-only (reassignment creates new record)');
-  console.log('- SLAs are append-only (extensions create new record)');
-  console.log('- Evidence is immutable after upload');
-  console.log('- Late evidence is automatically flagged');
-  console.log('- ALL actions generate audit logs');
-  console.log('============================================');
+  logger.info('============================================');
+  logger.info('COMPLIANCE EXECUTION SYSTEM - BACKEND');
+  logger.info('============================================');
+  logger.info(`Server running on port ${PORT}`);
+  logger.info(`Environment: ${process.env.NODE_ENV || 'development'}`);
+  logger.info('');
+  logger.info('ENFORCEMENT RULES ACTIVE:');
+  logger.info('- Obligations cannot be deleted');
+  logger.info('- Owners are append-only (reassignment creates new record)');
+  logger.info('- SLAs are append-only (extensions create new record)');
+  logger.info('- Evidence is immutable after upload');
+  logger.info('- Late evidence is automatically flagged');
+  logger.info('- ALL actions generate audit logs');
+  logger.info('============================================');
   
   // Start SLA alert cron job
-  console.log('');
-  console.log('STARTING BACKGROUND JOBS...');
+  logger.info('');
+  logger.info('STARTING BACKGROUND JOBS...');
   startSLAAlertJob();
-  console.log('============================================');
+  logger.info('============================================');
 });
 
 export default app;

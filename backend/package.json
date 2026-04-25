@@ -9,13 +9,22 @@
     "dev": "ts-node src/index.ts",
     "dev:watch": "nodemon --exec ts-node src/index.ts",
     "migrate": "ts-node src/scripts/migrate.ts",
+    "migrate:test": "ts-node -r dotenv/config src/scripts/migrate.ts dotenv_config_path=.env.test",
+    "validate:db": "ts-node src/scripts/validateDatabaseSetup.ts",
     "seed": "ts-node src/scripts/seed.ts",
+    "seed:test": "ts-node -r dotenv/config src/scripts/seed.ts dotenv_config_path=.env.test",
+    "test:prepare": "npm run migrate:test && npm run seed:test",
+    "validate:phase4": "ts-node src/scripts/validatePhase4.ts",
     "typecheck": "tsc --noEmit",
     "clean": "rimraf dist"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.888.0",
+    "@aws-sdk/s3-request-presigner": "^3.888.0",
+    "@sentry/node": "^8.36.0",
     "archiver": "^6.0.1",
     "bcrypt": "^5.1.1",
+    "compliance-execution-system": "file:..",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^4.18.2",
@@ -30,7 +39,8 @@
     "passport-google-oauth20": "^2.0.0",
     "pdfkit": "^0.14.0",
     "pg": "^8.11.3",
-    "uuid": "^9.0.1"
+    "uuid": "^9.0.1",
+    "winston": "^3.15.0"
   },
   "devDependencies": {
     "@types/archiver": "^7.0.0",

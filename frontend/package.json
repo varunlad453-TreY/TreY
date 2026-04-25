@@ -4,7 +4,9 @@
   "description": "System of Record for Compliance Execution - Frontend",
   "private": true,
   "dependencies": {
+    "@sentry/react": "^8.36.0",
     "axios": "^1.6.2",
+    "compliance-execution-system": "file:..",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-dropzone": "^14.4.0",
