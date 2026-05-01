@@ -10,11 +10,14 @@
     "dev:watch": "nodemon --exec ts-node src/index.ts",
     "migrate": "ts-node src/scripts/migrate.ts",
     "migrate:test": "ts-node -r dotenv/config src/scripts/migrate.ts dotenv_config_path=.env.test",
+    "validate:env": "ts-node src/scripts/validateEnv.ts",
     "validate:db": "ts-node src/scripts/validateDatabaseSetup.ts",
     "seed": "ts-node src/scripts/seed.ts",
     "seed:test": "ts-node -r dotenv/config src/scripts/seed.ts dotenv_config_path=.env.test",
     "test:prepare": "npm run migrate:test && npm run seed:test",
     "validate:phase4": "ts-node src/scripts/validatePhase4.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
     "clean": "rimraf dist"
   },
@@ -59,6 +62,7 @@
     "@types/uuid": "^10.0.0",
     "nodemon": "^3.1.11",
     "ts-node": "^10.9.2",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^2.1.9"
   }
 }

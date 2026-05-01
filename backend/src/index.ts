@@ -114,6 +114,11 @@ app.get('/health', (_req: Request, res: Response): void => {
   });
 });
 
+// Sentry verification endpoint - remove after confirming events are flowing
+app.get('/debug-sentry', (_req: Request, _res: Response): void => {
+  throw new Error('My first Sentry error!');
+});
+
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/obligations', obligationsRoutes);

@@ -98,7 +98,7 @@ nano .env  # or use any text editor
 ```env
 # Server
 NODE_ENV=development
-PORT=3001
+PORT=5000
 
 # Database - PASTE YOUR NEON/SUPABASE CONNECTION STRING HERE
 DATABASE_URL=postgresql://your-username:your-password@your-host/your-database?sslmode=require
@@ -139,7 +139,7 @@ nano .env
 
 **Update `frontend/.env`:**
 ```env
-REACT_APP_API_URL=http://localhost:3001/api
+REACT_APP_API_URL=http://localhost:5000/api
 ```
 
 ---
@@ -149,8 +149,9 @@ REACT_APP_API_URL=http://localhost:3001/api
 ```bash
 cd /Users/mac/TreY/backend
 
-# Run the automated database setup script
-node setup-database.js
+# Run migrations and schema validation
+npm run migrate
+npm run validate:db
 ```
 
 **What this does:**
@@ -162,12 +163,9 @@ node setup-database.js
 
 **Expected output:**
 ```
-[SUCCESS] Connected successfully!
-[INFO] Database is empty, ready for migrations.
-[START] Starting database migrations...
-[SUCCESS] Migration completed: 001_initial_schema.sql
-[SUCCESS] Migration completed: 002_password_security.sql
-[SUCCESS] Database setup complete!
+[Migration] Running migration: 001_initial_schema.sql
+[Migration] Running migration: 002_password_security.sql
+[DB Validate] PASSED
 ```
 
 ---
@@ -178,7 +176,7 @@ node setup-database.js
 
 ```bash
 cd /Users/mac/TreY/backend
-npm start
+npm run dev
 ```
 
 **Expected output:**
@@ -186,7 +184,7 @@ npm start
 [SERVER] Starting Compliance Execution Backend...
 [DB] Connected to PostgreSQL
 [CRON] SLA Alert Job started (runs daily at 9:00 AM IST)
-[SERVER] Server running on port 3001
+[SERVER] Server running on port 5000
 ```
 
 #### Terminal 2: Start Frontend
@@ -224,7 +222,7 @@ Your browser should automatically open to http://localhost:3000
 ### Option B: Via API (Testing)
 
 ```bash
-curl -X POST http://localhost:3001/api/auth/register \
+curl -X POST http://localhost:5000/api/auth/register \
   -H "Content-Type: application/json" \
   -d '{
     "email": "admin@example.com",
@@ -246,7 +244,7 @@ curl -X POST http://localhost:3001/api/auth/register \
 - [ ] `backend/.env` configured with DATABASE_URL
 - [ ] `frontend/.env` configured with API URL
 - [ ] Database migrations completed successfully
-- [ ] Backend server running (port 3001)
+- [ ] Backend server running (port 5000)
 - [ ] Frontend app running (port 3000)
 - [ ] First user account created
 - [ ] Can login successfully

@@ -50,6 +50,35 @@ jobs:
 
       - name: Build frontend
         run: npm run build
+        env:
+          CI: false
+
+  deploy:
+    name: Deploy to Render
+    needs: [backend-typecheck, frontend-build]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Backend Deploy
+        run: |
+          if [ -z "${{ secrets.RENDER_BACKEND_DEPLOY_HOOK }}" ]; then
+            echo "Error: RENDER_BACKEND_DEPLOY_HOOK secret is not set!"
+            exit 1
+          fi
+          curl -s -X POST "${{ secrets.RENDER_BACKEND_DEPLOY_HOOK }}"
+          echo " Backend deploy triggered"
+
+      - name: Trigger Frontend Deploy
+        run: |
+          if [ -z "${{ secrets.RENDER_FRONTEND_DEPLOY_HOOK }}" ]; then
+            echo "Error: RENDER_FRONTEND_DEPLOY_HOOK secret is not set!"
+            exit 1
+          fi
+          curl -s -X POST "${{ secrets.RENDER_FRONTEND_DEPLOY_HOOK }}"
+          echo " Frontend deploy triggered"
+
+      - name: Build frontend
+        run: npm run build
 
   phase4-regression:
     runs-on: ubuntu-latest
