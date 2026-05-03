@@ -119,7 +119,7 @@ jobs:
   deploy-backend:
     runs-on: ubuntu-latest
     needs: [backend-typecheck, frontend-build, phase4-regression]
-    if: ${{ (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master') && secrets.RENDER_BACKEND_DEPLOY_HOOK != '' }}
+    if: ${{ github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master') }}
     steps:
       - name: Trigger backend deploy hook
         run: curl -fsS -X POST "${{ secrets.RENDER_BACKEND_DEPLOY_HOOK }}"
@@ -127,7 +127,7 @@ jobs:
   deploy-frontend:
     runs-on: ubuntu-latest
     needs: [backend-typecheck, frontend-build, phase4-regression]
-    if: ${{ (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master') && secrets.RENDER_FRONTEND_DEPLOY_HOOK != '' }}
+    if: ${{ github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master') }}
     steps:
       - name: Trigger frontend deploy hook
         run: curl -fsS -X POST "${{ secrets.RENDER_FRONTEND_DEPLOY_HOOK }}"
