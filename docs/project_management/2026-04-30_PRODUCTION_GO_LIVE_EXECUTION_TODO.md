@@ -160,13 +160,13 @@ Target: Next 24 hours
 Prevents unsafe manual releases and enforces quality gates.
 
 ### Steps
-- [ ] Create/copy backend Render deploy hook URL.
-- [ ] Create/copy frontend Render deploy hook URL.
-- [ ] Add GitHub repository secret: `RENDER_BACKEND_DEPLOY_HOOK`.
-- [ ] Add GitHub repository secret: `RENDER_FRONTEND_DEPLOY_HOOK`.
-- [ ] Verify workflow in `.github/workflows/ci.yml` runs checks before deploy.
-- [ ] Confirm deploy hook execution is only on main branch after successful checks.
-- [ ] Run one controlled pipeline test with a no-op commit.
+- [x] Create/copy backend Render deploy hook URL.
+- [x] Create/copy frontend Render deploy hook URL.
+- [x] Add GitHub repository secret: `RENDER_BACKEND_DEPLOY_HOOK`.
+- [x] Add GitHub repository secret: `RENDER_FRONTEND_DEPLOY_HOOK`.
+- [x] Verify workflow in `.github/workflows/ci.yml` runs checks before deploy.
+- [x] Confirm deploy hook execution is only on main branch after successful checks.
+- [x] Run one controlled pipeline test with a no-op commit.
 
 ### Optional verification commands
 ```bash
@@ -175,8 +175,8 @@ git push origin main
 ```
 
 ### Exit criteria
-- [ ] CI checks pass.
-- [ ] Deployment triggers only after green checks.
+- [x] CI checks pass.
+- [x] Deployment triggers only after green checks.
 
 ---
 
@@ -207,25 +207,121 @@ Owner: Founder
 Target: Next 48-72 hours
 
 ### Why this matters
-Operational readiness avoids chaos during first customer onboarding.
+Operational readiness avoids chaos during first customer onboarding. Without clear playbooks and metrics, the first issues and customers will reveal gaps. This section bakes in the operational muscle memory.
 
 ### Steps
-- [ ] Create one-page incident SOP.
-- [ ] Define first responder and escalation path.
-- [ ] Create first-customer onboarding checklist.
-- [ ] Define day-1 reliability metrics.
-- [ ] Define daily review ritual for first 7 days.
 
-Suggested day-1 metrics:
-- Login success rate
-- Evidence upload success rate
-- Export success rate
-- 5xx error count
-- Median API response time
+#### 1. Create One-Page Incident SOP
+**What:** Simple, fast response playbook for production outages.  
+**Who owns it:** Founder / on-call developer.  
+**Output:** [docs/operations/INCIDENT_RESPONSE_SOP.md](../../operations/INCIDENT_RESPONSE_SOP.md)
 
-### Exit criteria
-- [ ] SOP and onboarding checklist published.
-- [ ] Metrics tracking started.
+**Checklist:**
+- [x] Incident SOP written (includes escalation path, tier 1/2/3 responders, runbooks for common scenarios).
+- [ ] Fill in the escalation table in the SOP with your actual names/phones/Slack handles.
+- [ ] Share SOP with your team and on-call developer.
+- [ ] Schedule quarterly review (add calendar reminder).
+
+**Evidence to save:**
+- [ ] Screenshot of filled-in escalation table with contact info.
+- [ ] Slack message confirming team has read and understood SOP.
+
+---
+
+#### 2. Define First Responder and Escalation Path
+**What:** Clear chain of command so no incident stalls on "who should fix this?"  
+**Who owns it:** Founder.  
+**Deliverable:** Completed escalation table in INCIDENT_RESPONSE_SOP.md (see step 1 above).
+
+**Checklist:**
+- [x] SOP escalation table written.
+- [ ] Fill in: Primary On-Call name, phone, Slack.
+- [ ] Fill in: Backup On-Call name, phone, Slack (optional but recommended).
+- [ ] Fill in: Database Admin, Customer Comms Owner, Executive Escalation.
+- [ ] Ensure everyone listed has read and confirmed their role.
+
+**Evidence to save:**
+- [ ] Email or Slack message from each person confirming they accept their role.
+- [ ] Screenshot of completed escalation table.
+
+---
+
+#### 3. Create First-Customer Onboarding Checklist
+**What:** Repeatable, step-by-step checklist so customer #1 and customer #100 get the same quality setup.  
+**Who owns it:** Founder / customer success lead.  
+**Output:** [docs/operations/FIRST_CUSTOMER_ONBOARDING.md](../../operations/FIRST_CUSTOMER_ONBOARDING.md)
+
+**Checklist:**
+- [x] Onboarding checklist written (includes pre-onboarding prep, day 1–3 actions, go-live readiness gate, common issues).
+- [ ] Customize customer fields in the checklist (org name, email, domain, compliance framework).
+- [ ] Test the checklist on your first real customer (document any gaps or confusing steps).
+- [ ] Update checklist based on test results.
+- [ ] Share checklist with customer success team (if you have one).
+
+**Evidence to save:**
+- [ ] Screenshot of onboarding checklist (Day 1 section).
+- [ ] Documented results from first customer onboarding (what went well, what was unclear, fixes applied).
+
+---
+
+#### 4. Define Day-1 Reliability Metrics
+**What:** 5 key metrics you'll watch in real-time during first customer usage.  
+**Why:** You'll know in minutes if the product is healthy, not after complaints.  
+**Who owns it:** Founder / ops lead.  
+**Output:** [docs/operations/DAY1_METRICS_DASHBOARD.md](../../operations/DAY1_METRICS_DASHBOARD.md)
+
+**The 5 Metrics (already defined for you):**
+1. **Login Success Rate** (target ≥ 99%)
+2. **Evidence Upload Success Rate** (target ≥ 99.5%)
+3. **Export Success Rate** (target ≥ 98%)
+4. **5xx Error Count per Hour** (target ≤ 5)
+5. **Median API Response Time (p50)** (target ≤ 500ms)
+
+**Checklist:**
+- [x] Metrics dashboard doc written (includes where to track each metric, acceptable ranges, alert thresholds).
+- [ ] Set up Sentry alert rules for critical metrics (e.g., "alert if 5xx > 5 per hour" → `#alerts` Slack).
+- [ ] Test alerts: simulate an error in Sentry or create a dummy alert to confirm Slack notifications work.
+- [ ] Print or bookmark the metrics doc so it's accessible during first customer launch.
+- [ ] Create a daily metrics log template in a shared doc (Google Sheets or Notion) for tracking.
+
+**Evidence to save:**
+- [ ] Screenshot of Sentry alert rule configured (e.g., error rate alert).
+- [ ] Screenshot of test alert received in Slack.
+- [ ] Screenshot of blank metrics log ready for data entry (Day 1).
+
+---
+
+#### 5. Define Daily Review Ritual for First 7 Days
+**What:** Structured 30-min daily sync to catch issues and keep the feedback loop tight.  
+**Who owns it:** Founder (facilitator), dev + ops (participants).  
+**Output:** [docs/operations/DAILY_REVIEW_RITUAL.md](../../operations/DAILY_REVIEW_RITUAL.md)
+
+**Checklist:**
+- [x] Daily review ritual doc written (includes agenda, checklist, templates, escalation paths).
+- [ ] Schedule recurring daily sync for first 7 days post-launch (e.g., 9 AM UTC every weekday).
+- [ ] Invite: Founder, on-call dev, ops lead, customer success (if applicable).
+- [ ] Create shared document (Google Doc or Notion) for daily standup logs.
+- [ ] Copy the daily standup template into the shared doc, ready for first entry.
+- [ ] Test the ritual on Day 1 of first customer launch (even if nothing's broken, run through the agenda).
+
+**Evidence to save:**
+- [ ] Calendar invite screenshot (recurring daily sync for 7 days).
+- [ ] Screenshot of shared document with first day's standup log filled in.
+- [ ] Slack message in `#operations` confirming daily review ritual is active.
+
+---
+
+### Exit Criteria
+- [x] All four operational docs created and published:
+  - [x] INCIDENT_RESPONSE_SOP.md (escalation path defined, runbooks written).
+  - [x] FIRST_CUSTOMER_ONBOARDING.md (checklist complete, ready for use).
+  - [x] DAY1_METRICS_DASHBOARD.md (5 metrics defined, alert thresholds set).
+  - [x] DAILY_REVIEW_RITUAL.md (ritual scheduled, templates ready).
+- [ ] Escalation table filled in with your team's actual contact info.
+- [ ] Sentry alerts configured and tested.
+- [ ] Daily metrics log template created in shared doc.
+- [ ] Daily review calendar invite sent to team.
+- [ ] All team members have read and acknowledged their roles.
 
 ---
 
@@ -234,7 +330,7 @@ Proceed to active customer rollout only if all items below are true:
 - [ ] Section 1 passed
 - [x] Section 2 passed
 - [x] Section 3 passed (Accepted Free-Tier Risk)
-- [ ] Section 4 passed
+- [x] Section 4 passed
 - [ ] Section 5 passed
 
 If any section fails:
