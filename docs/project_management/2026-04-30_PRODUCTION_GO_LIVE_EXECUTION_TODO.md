@@ -218,13 +218,13 @@ Operational readiness avoids chaos during first customer onboarding. Without cle
 
 **Checklist:**
 - [x] Incident SOP written (includes escalation path, tier 1/2/3 responders, runbooks for common scenarios).
-- [ ] Fill in the escalation table in the SOP with your actual names/phones/Slack handles.
-- [ ] Share SOP with your team and on-call developer.
+- [ ] Defer filling the escalation table until the team exists. For now, keep the SOP ready and revisit when you have more than the founder and functional tester.
+- [ ] Share SOP with your team and on-call developer in Confluence.
 - [ ] Schedule quarterly review (add calendar reminder).
 
 **Evidence to save:**
 - [ ] Screenshot of filled-in escalation table with contact info.
-- [ ] Slack message confirming team has read and understood SOP.
+- [ ] Confluence comment or Jira confirmation showing the team has read and understood the SOP.
 
 ---
 
@@ -235,13 +235,12 @@ Operational readiness avoids chaos during first customer onboarding. Without cle
 
 **Checklist:**
 - [x] SOP escalation table written.
-- [ ] Fill in: Primary On-Call name, phone, Slack.
-- [ ] Fill in: Backup On-Call name, phone, Slack (optional but recommended).
+- [ ] Defer actual contact names until the team exists. For now, keep the row structure and revisit later.
 - [ ] Fill in: Database Admin, Customer Comms Owner, Executive Escalation.
 - [ ] Ensure everyone listed has read and confirmed their role.
 
 **Evidence to save:**
-- [ ] Email or Slack message from each person confirming they accept their role.
+- [ ] Email, Jira comment, or Confluence acknowledgment from each person confirming they accept their role.
 - [ ] Screenshot of completed escalation table.
 
 ---
@@ -279,14 +278,14 @@ Operational readiness avoids chaos during first customer onboarding. Without cle
 
 **Checklist:**
 - [x] Metrics dashboard doc written (includes where to track each metric, acceptable ranges, alert thresholds).
-- [ ] Set up Sentry alert rules for critical metrics (e.g., "alert if 5xx > 5 per hour" → `#alerts` Slack).
-- [ ] Test alerts: simulate an error in Sentry or create a dummy alert to confirm Slack notifications work.
+- [x] Set up Sentry alert rules for critical metrics (e.g., "alert if 5xx > 5 per hour" → Jira/email notification).
+- [x] Test alerts: simulate an error in Sentry or create a dummy alert to confirm Jira/email notifications work.
 - [ ] Print or bookmark the metrics doc so it's accessible during first customer launch.
-- [ ] Create a daily metrics log template in a shared doc (Google Sheets or Notion) for tracking.
+- [ ] Create a daily metrics log template in Confluence or a shared spreadsheet for tracking.
 
 **Evidence to save:**
-- [ ] Screenshot of Sentry alert rule configured (e.g., error rate alert).
-- [ ] Screenshot of test alert received in Slack.
+- [x] Screenshot of Sentry alert rule configured (e.g., error rate alert).
+- [x] Screenshot of test alert received in Jira/email.
 - [ ] Screenshot of blank metrics log ready for data entry (Day 1).
 
 ---
@@ -300,14 +299,14 @@ Operational readiness avoids chaos during first customer onboarding. Without cle
 - [x] Daily review ritual doc written (includes agenda, checklist, templates, escalation paths).
 - [ ] Schedule recurring daily sync for first 7 days post-launch (e.g., 9 AM UTC every weekday).
 - [ ] Invite: Founder, on-call dev, ops lead, customer success (if applicable).
-- [ ] Create shared document (Google Doc or Notion) for daily standup logs.
-- [ ] Copy the daily standup template into the shared doc, ready for first entry.
+- [ ] Create the Daily Standups page in Confluence for daily standup logs.
+- [ ] Copy the daily standup template into the Daily Standups page, ready for first entry.
 - [ ] Test the ritual on Day 1 of first customer launch (even if nothing's broken, run through the agenda).
 
 **Evidence to save:**
 - [ ] Calendar invite screenshot (recurring daily sync for 7 days).
-- [ ] Screenshot of shared document with first day's standup log filled in.
-- [ ] Slack message in `#operations` confirming daily review ritual is active.
+- [ ] Screenshot of the Daily Standups page with first day's standup log filled in.
+- [ ] Confluence page link or Jira confirmation showing the daily review ritual is active.
 
 ---
 
@@ -318,8 +317,8 @@ Operational readiness avoids chaos during first customer onboarding. Without cle
   - [x] DAY1_METRICS_DASHBOARD.md (5 metrics defined, alert thresholds set).
   - [x] DAILY_REVIEW_RITUAL.md (ritual scheduled, templates ready).
 - [ ] Escalation table filled in with your team's actual contact info.
-- [ ] Sentry alerts configured and tested.
-- [ ] Daily metrics log template created in shared doc.
+- [x] Sentry alerts configured and tested.
+- [ ] Daily metrics log template created in Confluence or a shared spreadsheet.
 - [ ] Daily review calendar invite sent to team.
 - [ ] All team members have read and acknowledged their roles.
 

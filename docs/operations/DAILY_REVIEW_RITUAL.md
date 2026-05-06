@@ -17,7 +17,7 @@
 - Developer on-call (if issues exist).
 - Customer success / ops lead (if applicable).
 
-**Format:** Slack thread or 15-min Zoom sync. Do not skip.
+**Format:** Jira comments / Confluence discussion or 15-min Zoom sync. Do not skip.
 
 ---
 
@@ -82,19 +82,19 @@
 **Owner:** Founder or customer success lead.
 
 **Steps:**
-1. **Check Slack:** Scroll `#customer-[name]-support` channel.
-   - Any messages from customer? (Questions, issues, feature requests?)
-   - If yes: respond within 2 hours. Log issue.
+1. **Check Jira/Support queue:** Review the customer's Jira project or Service Management portal.
+   - Any new tickets or customer messages? (Questions, issues, feature requests?)
+   - If yes: respond within 2 hours. Log issue and update the Jira ticket.
 2. **Email check:** Scan for customer emails since yesterday.
    - Any replies to onboarding summary or status updates?
-3. **Optional: Quick call or Slack message to customer.**
+3. **Optional: Quick call or email / Jira message to customer.**
    - "Hey [customer name], how's everything going with TreYce? Any hiccups?"
-   - Log their feedback.
+   - Log their feedback in the Jira ticket or Confluence page.
 
 **If red (customer complaint or issue):**
-- Priority 1: Acknowledge and provide ETA for fix.
+- Priority 1: Acknowledge in the Jira ticket or via email and provide ETA for fix.
 - Priority 2: Escalate to developer if technical.
-- Priority 3: Add to action items.
+- Priority 3: Add to action items and track resolution in Jira.
 
 **Template for log:**
 ```
@@ -172,8 +172,8 @@
 
 **Trend vs. yesterday:** 📈 Improving / ➡️ Stable / 📉 Degrading
 
-### Customer Feedback
-- Slack messages: [None / Describe]
+-### Customer Feedback
+- Jira tickets / Support messages: [None / Describe]
 - Email: [None / Describe]
 - Sentiment: 😊 Positive / 😐 Neutral / 😞 Negative
 - Action required: [Yes/No → Describe]
@@ -205,9 +205,9 @@
 - Pause agenda, focus on diagnosis and fix.
 
 **If customer complaint:**
-- Acknowledge in Slack within 30 min.
-- Provide ETA or workaround within 2 hours.
-- Follow up once resolved.
+- Acknowledge in the Jira ticket or via email within 30 min.
+- Provide ETA or workaround within 2 hours and update the Jira ticket.
+- Follow up in the Jira ticket once resolved.
 
 **If metrics red:**
 - Investigate root cause (see DAY1_METRICS_DASHBOARD.md runbooks).
@@ -221,7 +221,7 @@
 Once you've completed 7 days of launches successfully:
 
 1. **Reduce sync frequency** from daily to 3x/week (e.g., Mon, Wed, Fri).
-2. **Metrics review** stays daily but becomes async (Founder reviews dashboard, logs findings in Slack).
+2. **Metrics review** stays daily but becomes async (Founder reviews dashboard, logs findings in a Jira ticket or Confluence page).
 3. **Weekly review** continues (Friday end-of-day full team sync).
 4. **Customer touchpoints** move from daily to weekly check-ins.
 5. **Incident response** remains on-call ready (no change).
@@ -232,7 +232,7 @@ Once you've completed 7 days of launches successfully:
 
 At the end of each day, save the standup log to a shared folder:
 - **Location:** `docs/operations/daily-standups/Day-[N]-[Date].md` (or shared Google Doc).
-- **Share:** Link to daily standups in `#operations` Slack channel.
+- **Share:** Link to daily standups in Confluence and add the page link to the team's Jira project or internal docs.
 - **Retention:** Keep for at least 30 days; archive older logs quarterly.
 
 ---

@@ -12,7 +12,7 @@
 ### Internal Prep
 - [ ] **Verify production is stable:** Check Sentry dashboard for any unresolved critical issues in past 48 hours.
 - [ ] **Confirm customer details are captured:** Customer name, primary contact email, org size, compliance domain (e.g., healthcare, finance).
-- [ ] **Reserve a Slack channel:** Create `#customer-[name]-support` for this customer's issues.
+- [ ] **Reserve a Jira project/queue and Confluence support page:** Create a Jira project or component `CUSTOMER-[SHORT]` for this customer's issue queue and a Confluence page `Customer [Name] Support` that links to the Jira project.
 - [ ] **Prepare customer credentials:** Customer will need a login. Confirm Google Workspace SSO is live and customer's email is valid.
 - [ ] **Document customer scope:** What obligations or compliance frameworks is the customer importing? (e.g., ISO 27001 checklist, HIPAA audit items).
 
@@ -53,7 +53,7 @@
 - [ ] **Option A (Recommended):** Customer provides CSV or spreadsheet of obligations → you import manually or via API.
 - [ ] **Option B:** Customer logs in and creates obligations one by one in the UI.
 - [ ] Document which option is chosen and why.
-- [ ] **Evidence to save:** Email confirmation or Slack message confirming method.
+- [ ] **Evidence to save:** Email confirmation or a Jira ticket confirming method.
 
 ### 2. Import Obligations (if Option A)
 - [ ] Receive customer data (obligation title, due date, owner, description).
@@ -184,7 +184,7 @@
 - [ ] **Permissions are correct:** customer sees only their data.
 - [ ] **Performance is acceptable:** queries < 500ms, uploads/downloads < 30 sec.
 - [ ] **Customer has been trained** on dashboard navigation and export options.
-- [ ] **Support channel is live:** `#customer-[name]-support` Slack channel created and customer invited.
+- [ ] **Support channel is live:** Jira project/queue created and Confluence support page created; customer invited to the Jira Service Management portal or provided a support email.
 
 ### Sign-Off
 - [ ] Founder / Customer Success Lead: _____________________ (signature)
@@ -192,7 +192,7 @@
 - [ ] Customer Primary Contact: _____________________ (email confirmation)
 
 ### Post-Go-Live
-- [ ] Email customer their login link and support Slack channel.
+- [ ] Email customer their login link and the Jira support project link (or Service Management portal instructions).
 - [ ] Schedule a 1-week check-in: "How is TreYce working for you? Any issues?"
 - [ ] Log this onboarding in the customer database (date, who led it, any issues encountered).
 
@@ -211,6 +211,7 @@ Your TreYce compliance governance account is now live and ready to use.
 - Email login: [customer email]
 - Dashboard URL: https://trey-frontend-[id].onrender.com
 - Support channel: #customer-[name]-support (on Slack)
+- Support project: CUSTOMER-[SHORT] Jira project (support via Jira Service Management)
 
 **You're all set to:**
 1. Create or import compliance obligations.

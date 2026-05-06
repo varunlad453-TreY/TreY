@@ -119,6 +119,11 @@ app.get('/debug-sentry', (_req: Request, _res: Response): void => {
   throw new Error('My first Sentry error!');
 });
 
+// Temporary second Sentry verification endpoint - remove after confirming alert firing
+app.get('/debug-sentry-2', (_req: Request, _res: Response): void => {
+  throw new Error('My second Sentry error!');
+});
+
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/obligations', obligationsRoutes);

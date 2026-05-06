@@ -110,12 +110,12 @@
 ### Option 2: Automated Alerts (Recommended for Scale)
 **Cost:** Varies (Sentry free tier includes 1 alert rule, Render has built-in health checks).  
 **Effort:** 30 min one-time setup.  
-**Frequency:** Real-time alerts via Slack/email.
+**Frequency:** Real-time alerts via Jira/email.
 
 **Setup:**
 1. **Sentry Alerts:** Create alert rule for each metric.
-   - Condition: `Error count > 5 per hour` → send to `#alerts` Slack channel.
-   - Condition: `Transaction duration (p50) > 500ms` → send to `#alerts` Slack channel.
+  - Condition: `Error count > 5 per hour` → create a Jira issue in the `TREYOPS` project or send an email to `ops@treyce.example.com`.
+  - Condition: `Transaction duration (p50) > 500ms` → create a Jira issue in the `TREYOPS` project or send an email to `ops@treyce.example.com`.
 2. **Render Health Checks:** Enable automatic restart if backend service crashes (Render dashboard → service settings → health checks).
 3. **CloudFlare R2 Alerts:** Set up alerts if upload/download errors spike (CloudFlare console → notifications).
 
@@ -204,7 +204,7 @@ If you want to automate alerting, use these thresholds:
       "event.duration": "> 500ms"
     }
   ],
-  "notify": "slack:#alerts"
+  "notify": "jira:TREYOPS"
 }
 
 // Example: Error rate alert
@@ -217,7 +217,7 @@ If you want to automate alerting, use these thresholds:
     }
   ],
   "threshold": "> 5",
-  "notify": "slack:#alerts"
+  "notify": "jira:TREYOPS"
 }
 ```
 

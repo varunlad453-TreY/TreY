@@ -25,7 +25,7 @@
 ### Tier 3: Customer Comms Lead (within 10 min if customer-facing)
 - **Owner:** Founder or designated comms person.
 - **Action:** Notify affected customers of incident, provide ETA for resolution.
-- **Format:** Slack message to customer (via direct channel or shared incident room).
+- **Format:** Post an update to the customer's Jira Service Management ticket or send email to the customer's primary contact.
 
 ---
 
@@ -83,7 +83,7 @@
 - **Render Dashboard:** https://dashboard.render.com/ → TreYce account
 - **R2 Bucket:** CloudFlare R2 console → trey-evidence bucket
 - **Database Admin:** Render or external db admin tool (if not Render-hosted)
-- **Incident Log Template:** (create shared document link, e.g., Google Docs or Notion)
+ - **Incident Log Template:** (create a shared Confluence page or private Google Drive doc)
 
 ---
 
@@ -147,13 +147,13 @@ When an incident occurs, fill in this log:
 
 ## Escalation Owners (Fill In Your Names)
 
-| Role | Name | Phone | Slack |
+| Role | Name | Phone | Contact method |
 | --- | --- | --- | --- |
-| **Primary On-Call** | [Founder/Dev] | [+1-XXX-XXX-XXXX] | @[slack-handle] |
-| **Backup On-Call** | [TBD] | [+1-XXX-XXX-XXXX] | @[slack-handle] |
-| **Database Admin** | [Founder/DBA] | [+1-XXX-XXX-XXXX] | @[slack-handle] |
-| **Customer Comms** | [Founder/CEO] | [+1-XXX-XXX-XXXX] | @[slack-handle] |
-| **Executive Escalation** | [CEO/Board] | [+1-XXX-XXX-XXXX] | @[slack-handle] |
+| **Primary On-Call** | [Founder/Dev] | [+1-XXX-XXX-XXXX] | Jira username or email |
+| **Backup On-Call** | [TBD] | [+1-XXX-XXX-XXXX] | Jira username or email |
+| **Database Admin** | [Founder/DBA] | [+1-XXX-XXX-XXXX] | Jira username or email |
+| **Customer Comms** | [Founder/CEO] | [+1-XXX-XXX-XXXX] | Jira username or email |
+| **Executive Escalation** | [CEO/Board] | [+1-XXX-XXX-XXXX] | Jira username or email |
 
 ---
 
@@ -171,7 +171,7 @@ Example output: "Next time, we'll add a database connection pool alert at 80% to
 
 ## Keeping This SOP Current
 
-- Review this SOP monthly or after each incident.
-- Update escalation contact info quarterly.
-- Update Quick Links whenever infrastructure changes.
-- Share updates with the team via Slack #operations channel.
+ - Review this SOP monthly or after each incident.
+ - Update escalation contact info quarterly.
+ - Update Quick Links whenever infrastructure changes.
+ - Share updates with the team via Confluence page comments and create Jira tickets for action items.
