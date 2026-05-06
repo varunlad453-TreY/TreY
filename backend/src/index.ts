@@ -114,15 +114,27 @@ app.get('/health', (_req: Request, res: Response): void => {
   });
 });
 
-// Sentry verification endpoint - remove after confirming events are flowing
-app.get('/debug-sentry', (_req: Request, _res: Response): void => {
-  throw new Error('My first Sentry error!');
-});
+// Sentry verification endpoints - register only for non-production or when explicitly allowed
+if (process.env.NODE_ENV !== 'production' || process.env.ALLOW_DEBUG_ROUTES === 'true') {
+  // Sentry verification endpoint - remove after confirming events are flowing
+  app.get('/debug-sentry', (_req: Request, _res: Response): void => {
+    throw new Error('My first Sentry error!');
+  });
 
-// Temporary second Sentry verification endpoint - remove after confirming alert firing
-app.get('/debug-sentry-2', (_req: Request, _res: Response): void => {
-  throw new Error('My second Sentry error!');
-});
+  // Temporary second Sentry verification endpoint - remove after confirming alert firing
+  app.get('/debug-sentry-2', (_req: Request, _res: Response): void => {
+    throw new Error('My second Sentry error!');
+  });
+} else {
+  // In production, respond 404 to these paths (keeps behavior predictable)
+  app.get('/debug-sentry', (_req: Request, res: Response): void => {
+    res.status(404).json({ error: 'NOT_FOUND', message: 'Endpoint not found' });
+  });
+
+  app.get('/debug-sentry-2', (_req: Request, res: Response): void => {
+    res.status(404).json({ error: 'NOT_FOUND', message: 'Endpoint not found' });
+  });
+}
 
 // API Routes
 app.use('/api/auth', authRoutes);
